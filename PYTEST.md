@@ -54,6 +54,52 @@ def test_devide(x, y, res):
 Для запуска теста в консоли прописываем pytest и в результатах будет две точки - значит, что оба теста завершены успешно (оба теста - потому что уазаны два кейса)
 Для детализации кесов тестов в консоли надо прописать pytest через флаг -v, то есть pytest -v
 
+# Группировка тестов
+Для группировки тестов они оборачиваются в классы 
+
+Пример: 
+```
+class TestCalculator:
+    @pytest.mark.parametrize(
+    "x, y, res",
+    [
+      (1, 2, 0.5),
+      (5, -1, -5)
+    ])
+    def test_devide(x, y, res):
+        assert Calculator().divide(x, y) == res
+
+    @pytest.mark.parametrize(
+    "x, y, res",
+    [
+      (1, 2, 3),
+      (5, -1, 4)
+    ])
+    def test_add(x, y, res):
+        assert Calculator().add(x, y) == res
+```
+Для запуска всех тестов в группе TestCalculator в консоли прописываем pytest и далее адрес этого теста (например, tests(папка)/test_main.py(файл с тестами)::TestCalculator)
+
+# Обработка исключений
+Прописываем в начале файла from contextlib import nullcontext as does_not_raise
+
+Пример: 
+```
+from contextlib import nullcontext as does_not_raise
+
+@pytest.mark.parametrize(
+    "x, y, res, expectation",
+    [
+      (1, 2, 0.5, does_not_raise()),
+      (5, -1, -5, does_not_raise()),
+      (5, "-1", -5, pytest.raises(TypeError))
+    ])
+
+def test_devide(x, y, res, expectation):
+    with expectation:
+        assert Calculator().divide(x, y) == res
+```
+
 ### Фикстуры
 - функции, которые выполняют подготовительные действия перед запуском тестов
 Наиболее частые кейсы:
